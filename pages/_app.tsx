@@ -1,8 +1,31 @@
-import { AppProps } from 'next/app';
+import { AppContext, AppProps } from 'next/app';
+import { Provider } from 'react-redux';
+import { Store } from 'redux';
+import withReduxStore from '../lib/withReduxStore';
 import '../styles/globals.css';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
-  return <Component {...pageProps} />;
+interface Props extends AppProps {
+  reduxStore: Store;
+}
+
+const MyApp = ({ Component, pageProps, reduxStore }: Props) => {
+  return (
+    <Provider store={reduxStore}>
+      <Component {...pageProps} />;
+    </Provider>
+  );
 };
 
-export default MyApp;
+MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
+  let pageProps = {};
+
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+  return {
+    pageProps,
+  };
+};
+
+export default withReduxStore(MyApp);
