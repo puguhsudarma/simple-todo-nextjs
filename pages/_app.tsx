@@ -12,7 +12,7 @@ interface Props extends AppProps {
 const MyApp = ({ Component, pageProps, reduxStore }: Props) => {
   return (
     <Provider store={reduxStore}>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </Provider>
   );
 };
