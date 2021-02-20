@@ -36,7 +36,7 @@ const Home = () => {
           error={formik.errors.name}
         />
 
-        <div className="h-8" />
+        <div className="h-4" />
 
         <Button label="Next" type="submit" />
       </form>
