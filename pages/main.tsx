@@ -1,10 +1,12 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 import Button from '../components/Button';
 import CardTodo from '../components/cardTodo';
+import TodoFormModal, { ModalOnSubmitProps } from '../components/TodoFormModal';
 
 type OrderByType = 'title' | 'author' | 'time';
 
 const Main = () => {
+  const modalRef = useRef<TodoFormModal>(null);
   const [orderBy, setOrderBy] = useState<OrderByType>('title');
 
   const onChangeOrderBy = useCallback(
@@ -13,6 +15,29 @@ const Main = () => {
     },
     [orderBy]
   );
+
+  const onCreateTodoClick = useCallback(() => {
+    modalRef.current.show('Create Todo');
+  }, [modalRef]);
+
+  const onUpdateTodoClick = useCallback(
+    (id: string) => {
+      modalRef.current.show('Update Todo', {}, id);
+    },
+    [modalRef]
+  );
+
+  const onDeleteClick = useCallback(() => {}, []);
+
+  const onMarkDoneClick = useCallback(() => {}, []);
+
+  const onSubmitFormTodo = useCallback(({ values, id, cb }: ModalOnSubmitProps) => {
+    setTimeout(() => {
+      values;
+      id;
+      cb();
+    }, 3000);
+  }, []);
 
   return (
     <div className="bg-gray-200 flex w-screen h-screen">
@@ -41,7 +66,7 @@ const Main = () => {
               className="md:w-1/3 float-right"
               label="Create a Todo"
               type="button"
-              onClick={() => {}}
+              onClick={onCreateTodoClick}
             />
           </div>
         </div>
@@ -60,14 +85,16 @@ const Main = () => {
                 createdAt={'02 March 2020, 02:00 PM'}
                 author={'Reroet'}
                 isDone={true}
-                onMarkDoneClick={() => {}}
-                onEditClick={() => {}}
-                onDeleteClick={() => {}}
+                onMarkDoneClick={onMarkDoneClick}
+                onEditClick={onUpdateTodoClick}
+                onDeleteClick={onDeleteClick}
               />
             );
           })}
         </div>
       </div>
+
+      <TodoFormModal ref={modalRef} onSubmit={onSubmitFormTodo} />
     </div>
   );
 };
