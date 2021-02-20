@@ -1,6 +1,7 @@
 import { AppContext, AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
+import initFirebase from '../lib/firebase';
 import withReduxStore from '../lib/withReduxStore';
 import '../styles/globals.css';
 
@@ -17,6 +18,9 @@ const MyApp = ({ Component, pageProps, reduxStore }: Props) => {
 };
 
 MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
+  // init the firebase
+  initFirebase();
+
   let pageProps = {};
 
   if (Component.getInitialProps) {
