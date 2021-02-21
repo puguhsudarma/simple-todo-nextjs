@@ -9,6 +9,7 @@ import {
   deleteTodoLogic,
   getTodosLogic,
   markAsDoneLogic,
+  updateTodoLogic,
 } from '../store/todo/todoLogic';
 import { AppState, TodoBody } from '../types/todo.model';
 
@@ -98,6 +99,18 @@ const Main = () => {
       }
 
       // update todo
+      await dispatch(
+        updateTodoLogic({
+          id: id,
+          title: values.title,
+          description: values.description,
+          image: values.image,
+        })
+      );
+
+      if (cb) {
+        cb();
+      }
     },
     [dispatch]
   );

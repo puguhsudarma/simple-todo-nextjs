@@ -44,9 +44,11 @@ const CardTodo = (props: Props) => {
             onClick={() =>
               props.onEditClick(props.id, { title: props.title, description: props.description })
             }
-            className="focus:outline-none mr-4"
+            className={`${props.isDone ? 'pointer-events-none ' : ''}focus:outline-none mr-4`}
           >
-            <AiFillEdit className="text-green-800 text-2xl" />
+            <AiFillEdit
+              className={`${props.isDone ? 'text-gray-500' : 'text-green-800'} text-2xl`}
+            />
           </button>
 
           <button onClick={() => props.onDeleteClick(props.id)} className="focus:outline-none">

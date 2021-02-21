@@ -81,3 +81,20 @@ export const deleteTodoLogic = createAsyncThunk('todo/deleteTodo', async (todoId
   const firestore = firebase.firestore();
   return firestore.collection(TODOS).doc(todoId).delete();
 });
+
+export const updateTodoLogic = createAsyncThunk(
+  'todo/updateTodo',
+  async (props: Pick<TodoBody, 'title' | 'description' | 'image' | 'id'>) => {
+    const data: any = {
+      title: props.title,
+      description: props.description,
+      updated_date: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+
+    if (props.image) {
+      data.image = await uploadImageToFirebaseStorage(props.image);
+    }
+
+    return firebase.firestore().collection(TODOS).doc(props.id).update(data);
+  }
+);
