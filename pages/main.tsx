@@ -19,12 +19,12 @@ const Main = () => {
   const dispatch = useDispatch();
   const modalRef = useRef<TodoFormModal>(null);
   const [orderBy, setOrderBy] = useState<OrderByType>('title');
-  const [name, setName] = useState('');
+  const [name, setName] = useState('Your Name');
   const todos = useSelector((state: AppState) => state.todo.todos);
   const [loadingMarkAsDone, setLoadingMarkAsDone] = useState(null); // loading selected item
 
   useEffect(() => {
-    setName(localStorage.getItem('name'));
+    setName(localStorage.getItem('name') || 'Your Name');
   }, []);
 
   useEffect(() => {
