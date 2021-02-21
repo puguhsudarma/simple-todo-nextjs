@@ -14,10 +14,11 @@ export const saveNameLogic = createAsyncThunk('todos/saveName', async (props: { 
 
 export const getTodosLogic = createAsyncThunk(
   'todo/getTodos',
-  (unsubscribe: (ref: any) => void, thunkAPi) => {
+  (props: { orderBy: string; unsubscribe?: (ref: any) => void }, thunkAPi) => {
     const todosSnapshot = firebase
       .firestore()
       .collection(TODOS)
+      .orderBy(props.orderBy, 'asc')
       .onSnapshot((snapshot) => {
         const todos = snapshot.docs.map((todo) => {
           return {
@@ -28,7 +29,9 @@ export const getTodosLogic = createAsyncThunk(
         thunkAPi.dispatch(todoActions.getTodos({ todos }));
       });
 
-    unsubscribe(todosSnapshot);
+    if (props.unsubscribe) {
+      props.unsubscribe(todosSnapshot);
+    }
   }
 );
 

@@ -13,7 +13,7 @@ import {
 } from '../store/todo/todoLogic';
 import { AppState, TodoBody } from '../types/todo.model';
 
-type OrderByType = 'title' | 'author' | 'time';
+type OrderByType = 'title' | 'user_name' | 'created_date';
 
 const Main = () => {
   const dispatch = useDispatch();
@@ -32,8 +32,11 @@ const Main = () => {
 
     // listen to todo
     dispatch(
-      getTodosLogic((ref) => {
-        unsubscribe = ref;
+      getTodosLogic({
+        orderBy,
+        unsubscribe(ref) {
+          unsubscribe = ref;
+        },
       })
     );
 
@@ -42,7 +45,7 @@ const Main = () => {
         unsubscribe();
       }
     };
-  }, []);
+  }, [orderBy]);
 
   const onChangeOrderBy = useCallback(
     (e: ChangeEvent<HTMLSelectElement>) => {
@@ -132,8 +135,8 @@ const Main = () => {
               className="px-4 rounded-md w-full mt-1 md:mt-0 md:w-64"
             >
               <option value="title">Title</option>
-              <option value="author">Author</option>
-              <option value="time">Time created</option>
+              <option value="user_name">Author</option>
+              <option value="created_date">Time created</option>
             </select>
           </div>
 
