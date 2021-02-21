@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 import { Todo } from '../../types/todo.model';
-import { saveNameLogic } from './todoLogic';
+// import { saveNameLogic } from './todoLogic';
 
 const initialState = {
   user: {
@@ -31,9 +31,9 @@ const todoSlice = createSlice({
       };
     });
 
-    builder.addCase(saveNameLogic.fulfilled, (state, action) => {
-      state.user = action.payload;
-    });
+    // builder.addCase(saveNameLogic.fulfilled, (state, action) => {
+    //   state.user = action.payload;
+    // });
   },
 });
 
