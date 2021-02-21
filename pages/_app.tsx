@@ -1,35 +1,21 @@
-import { AppContext, AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
-import initFirebase from '../lib/firebase';
-import withReduxStore from '../lib/withReduxStore';
+import { newStore, wrapper } from '../store';
 import '../styles/globals.css';
 
 interface Props extends AppProps {
   reduxStore: Store;
 }
 
-const MyApp = ({ Component, pageProps, reduxStore }: Props) => {
+const MyApp = ({ Component, pageProps }: Props) => {
+  const store = newStore();
+
   return (
-    <Provider store={reduxStore}>
+    <Provider store={store}>
       <Component {...pageProps} />
     </Provider>
   );
 };
 
-MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
-  // init the firebase
-  initFirebase();
-
-  let pageProps = {};
-
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
-  }
-
-  return {
-    pageProps,
-  };
-};
-
-export default withReduxStore(MyApp);
+export default wrapper.withRedux(MyApp);
