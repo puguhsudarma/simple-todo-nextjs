@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../components/Button';
 import CardTodo from '../components/cardTodo';
 import TodoFormModal, { ModalOnSubmitProps } from '../components/TodoFormModal';
-import { createTodoLogic, getTodosLogic } from '../store/todo/todoLogic';
+import { createTodoLogic, getTodosLogic, markAsDoneLogic } from '../store/todo/todoLogic';
 import { AppState, TodoBody } from '../types/todo.model';
 
 type OrderByType = 'title' | 'author' | 'time';
@@ -15,6 +15,7 @@ const Main = () => {
   const [orderBy, setOrderBy] = useState<OrderByType>('title');
   const [name, setName] = useState('');
   const todos = useSelector((state: AppState) => state.todo.todos);
+  const [loadingMarkAsDone, setLoadingMarkAsDone] = useState(null); // loading selected item
 
   useEffect(() => {
     setName(localStorage.getItem('name'));
@@ -57,7 +58,11 @@ const Main = () => {
 
   const onDeleteClick = useCallback(() => {}, []);
 
-  const onMarkDoneClick = useCallback(() => {}, []);
+  const onMarkDoneClick = useCallback(async (id: string) => {
+    setLoadingMarkAsDone(id);
+    await dispatch(markAsDoneLogic(id));
+    setLoadingMarkAsDone(null);
+  }, []);
 
   const onSubmitFormTodo = useCallback(
     async ({ values, id, cb }: ModalOnSubmitProps) => {
@@ -129,6 +134,7 @@ const Main = () => {
                 createdAt={format(new Date(), 'dd MMMM yyyy, hh:mm aa')}
                 author={item.user_name}
                 isDone={item.done}
+                loading={item.id === loadingMarkAsDone}
                 onMarkDoneClick={onMarkDoneClick}
                 onEditClick={onUpdateTodoClick}
                 onDeleteClick={onDeleteClick}

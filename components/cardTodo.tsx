@@ -13,6 +13,7 @@ interface Props {
   onMarkDoneClick(id: string): void;
   onEditClick(id: string, item: Pick<TodoBody, 'title' | 'description'>): void;
   onDeleteClick(id: string): void;
+  loading?: boolean;
 }
 
 const CardTodo = (props: Props) => {
@@ -33,6 +34,7 @@ const CardTodo = (props: Props) => {
             onClick={() => props.onMarkDoneClick(props.id)}
             disabled={props.isDone}
             className="mt-4"
+            loading={props.loading}
           />
         </div>
 
