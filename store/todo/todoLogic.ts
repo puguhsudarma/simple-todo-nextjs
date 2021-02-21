@@ -76,3 +76,8 @@ export const markAsDoneLogic = createAsyncThunk('todo/markAsDone', async (todoId
   const firestore = firebase.firestore();
   return firestore.collection(TODOS).doc(todoId).update({ done: true });
 });
+
+export const deleteTodoLogic = createAsyncThunk('todo/deleteTodo', async (todoId: string) => {
+  const firestore = firebase.firestore();
+  return firestore.collection(TODOS).doc(todoId).delete();
+});

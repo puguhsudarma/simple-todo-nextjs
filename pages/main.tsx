@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../components/Button';
 import CardTodo from '../components/cardTodo';
 import TodoFormModal, { ModalOnSubmitProps } from '../components/TodoFormModal';
-import { createTodoLogic, getTodosLogic, markAsDoneLogic } from '../store/todo/todoLogic';
+import {
+  createTodoLogic,
+  deleteTodoLogic,
+  getTodosLogic,
+  markAsDoneLogic,
+} from '../store/todo/todoLogic';
 import { AppState, TodoBody } from '../types/todo.model';
 
 type OrderByType = 'title' | 'author' | 'time';
@@ -56,7 +61,14 @@ const Main = () => {
     [modalRef]
   );
 
-  const onDeleteClick = useCallback(() => {}, []);
+  const onDeleteClick = useCallback(async (id: string) => {
+    const confirmed = confirm('Are you sure to delete this todo?');
+    if (confirmed) {
+      setLoadingMarkAsDone(id);
+      await dispatch(deleteTodoLogic(id));
+      setLoadingMarkAsDone(null);
+    }
+  }, []);
 
   const onMarkDoneClick = useCallback(async (id: string) => {
     setLoadingMarkAsDone(id);
