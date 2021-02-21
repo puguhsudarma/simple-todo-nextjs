@@ -1,11 +1,15 @@
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import Button from '../components/Button';
 import Input from '../components/Form';
+import { saveNameLogic } from '../store/todo/todoLogic';
+import { todoActions } from '../store/todo/todoSlice';
 
 const Home = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -16,13 +20,16 @@ const Home = () => {
     validationSchema: yup.object().shape({
       name: yup.string().required('Please fill your name.'),
     }),
-    onSubmit(values) {
-      setLoading(true);
-      setTimeout(() => {
-        console.log(values);
+    async onSubmit(values) {
+      try {
+        setLoading(true);
+        dispatch(saveNameLogic({ name: values.name }));
+      } catch (error) {
+        dispatch(todoActions.saveName({ id: `error_${Math.random()}`, name: values.name }));
+      } finally {
         router.push('/main');
         setLoading(false);
-      }, 3000);
+      }
     },
   });
 
