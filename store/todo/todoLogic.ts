@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import firebase from 'firebase';
 import { TODOS, USERS } from '../../constants/path';
-import { Todo } from '../../types/todo.model';
+import { Todo, TodoBody } from '../../types/todo.model';
 import { todoActions } from './todoSlice';
 
 export const saveNameLogic = createAsyncThunk('todos/saveName', async (props: { name: string }) => {
@@ -20,7 +20,10 @@ export const getTodosLogic = createAsyncThunk(
       .collection(TODOS)
       .onSnapshot((snapshot) => {
         const todos = snapshot.docs.map((todo) => {
-          return { ...todo.data(), id: todo.id } as Todo;
+          return {
+            ...todo.data(),
+            id: todo.id,
+          } as Todo;
         });
         thunkAPi.dispatch(todoActions.getTodos({ todos }));
       });
@@ -28,3 +31,43 @@ export const getTodosLogic = createAsyncThunk(
     unsubscribe(todosSnapshot);
   }
 );
+
+export const uploadImageToFirebaseStorage = async (image: File) => {
+  try {
+    const ref = `/${TODOS}/${image.name}`;
+    const storage = firebase.storage();
+
+    const uploadTask = await storage.ref(ref).put(image);
+
+    const downloadUrl = await uploadTask.ref.getDownloadURL();
+
+    return downloadUrl as string;
+  } catch (error) {
+    alert(error.message);
+    return 'https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2021/02/15/1844222189.jpg';
+  }
+};
+
+export const createTodoLogic = createAsyncThunk('todo/createTodo', async (props: TodoBody) => {
+  let imageUrl = 'https://assets.pikiran-rakyat.com/crop/0x0:0x0/x/photo/2021/02/15/1844222189.jpg';
+
+  if (props.image) {
+    imageUrl = await uploadImageToFirebaseStorage(props.image);
+  }
+
+  const { id } = await firebase.firestore().collection(TODOS).add({
+    title: props.title,
+    description: props.description,
+    image: imageUrl,
+    user_id: props.userId,
+    user_name: props.userName,
+    done: false,
+    created_date: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+
+  return {
+    ...props,
+    id,
+    image: imageUrl,
+  };
+});

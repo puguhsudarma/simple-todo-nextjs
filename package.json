@@ -13,6 +13,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",
     "@tailwindcss/forms": "^0.2.1",
+    "date-fns": "^2.17.0",
     "firebase": "^8.2.9",
     "formik": "^2.2.6",
     "next": "10.0.7",

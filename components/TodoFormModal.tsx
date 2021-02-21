@@ -2,11 +2,12 @@ import { Formik } from 'formik';
 import React from 'react';
 import Modal from 'react-modal';
 import * as yup from 'yup';
+import { TodoBody } from '../types/todo.model';
 import Button from './Button';
 import Input from './Form';
 
 export interface ModalOnSubmitProps {
-  values: any;
+  values: Pick<TodoBody, 'title' | 'description' | 'image'>;
   id?: string;
   cb: () => void;
 }
@@ -18,7 +19,7 @@ interface Props {
 interface States {
   visible: boolean;
   title: string;
-  data?: any;
+  data?: Pick<TodoBody, 'title' | 'description'>;
   id?: string;
   loading: boolean;
 }
@@ -38,7 +39,7 @@ class TodoFormModal extends React.PureComponent<Props, States> {
     this._onSubmit = this._onSubmit.bind(this);
   }
 
-  public show(title: string, data?: any, id?: string) {
+  public show(title: string, data?: Pick<TodoBody, 'title' | 'description'>, id?: string) {
     this.setState({
       visible: true,
       title,
@@ -54,14 +55,14 @@ class TodoFormModal extends React.PureComponent<Props, States> {
     });
   }
 
-  _onSubmit(values: any) {
+  _onSubmit(values: Pick<TodoBody, 'title' | 'description' | 'image'>) {
     const { id } = this.state;
     this.setState({ loading: true });
     this.props.onSubmit({ values, id, cb: this.close });
   }
 
   render() {
-    const { visible, loading, title } = this.state;
+    const { visible, loading, title, data } = this.state;
 
     return (
       <Modal
@@ -96,8 +97,8 @@ class TodoFormModal extends React.PureComponent<Props, States> {
           <h1 className="text-2xl mb-8">{title}</h1>
           <Formik
             initialValues={{
-              title: '',
-              description: '',
+              title: data?.title || '',
+              description: data?.description || '',
               image: null as File | null,
             }}
             validationSchema={yup.object().shape({
@@ -130,7 +131,6 @@ class TodoFormModal extends React.PureComponent<Props, States> {
                   label="Image"
                   type="file"
                   name="image"
-                  value={values.image}
                   onChange={(e) => setFieldValue('image', e.target.files[0])}
                   accept="image/png, image/jpeg, image/jpg"
                   className="appearance-none focus:outline-none shadow-md border p-2 w-full font-light text-sm bg-white"

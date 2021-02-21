@@ -3,7 +3,7 @@ import rootReducer from '../store/reducers';
 
 export interface Todo {
   id: string;
-  created_date: { nanoseconds: number; seconds: number };
+  created_date?: Date;
   title: string;
   description: string;
   done: boolean;
@@ -14,6 +14,15 @@ export interface Todo {
 
 export interface User {
   name: string;
+}
+
+export interface TodoBody {
+  id?: string;
+  title: string;
+  description: string;
+  image: File | null;
+  userId: string;
+  userName: string;
 }
 
 export type AppDispatch = ReturnType<typeof newStore>['dispatch'];

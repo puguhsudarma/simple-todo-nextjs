@@ -1,4 +1,5 @@
 import { AiFillDelete, AiFillEdit, AiOutlineClockCircle, AiOutlineUser } from 'react-icons/ai';
+import { TodoBody } from '../types/todo.model';
 import Button from './Button';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
   author: string;
   isDone: boolean;
   onMarkDoneClick(id: string): void;
-  onEditClick(id: string): void;
+  onEditClick(id: string, item: Pick<TodoBody, 'title' | 'description'>): void;
   onDeleteClick(id: string): void;
 }
 
@@ -38,7 +39,9 @@ const CardTodo = (props: Props) => {
         <div className="flex justify-end self-start">
           <button
             disabled={props.isDone}
-            onClick={() => props.onEditClick(props.id)}
+            onClick={() =>
+              props.onEditClick(props.id, { title: props.title, description: props.description })
+            }
             className="focus:outline-none mr-4"
           >
             <AiFillEdit className="text-green-800 text-2xl" />

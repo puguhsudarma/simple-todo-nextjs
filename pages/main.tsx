@@ -1,10 +1,11 @@
+import { format } from 'date-fns';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../components/Button';
 import CardTodo from '../components/cardTodo';
 import TodoFormModal, { ModalOnSubmitProps } from '../components/TodoFormModal';
-import { getTodosLogic } from '../store/todo/todoLogic';
-import { AppState } from '../types/todo.model';
+import { createTodoLogic, getTodosLogic } from '../store/todo/todoLogic';
+import { AppState, TodoBody } from '../types/todo.model';
 
 type OrderByType = 'title' | 'author' | 'time';
 
@@ -48,8 +49,8 @@ const Main = () => {
   }, [modalRef]);
 
   const onUpdateTodoClick = useCallback(
-    (id: string) => {
-      modalRef.current.show('Update Todo', {}, id);
+    (id: string, item: Pick<TodoBody, 'title' | 'description'>) => {
+      modalRef.current.show('Update Todo', item, id);
     },
     [modalRef]
   );
@@ -58,13 +59,31 @@ const Main = () => {
 
   const onMarkDoneClick = useCallback(() => {}, []);
 
-  const onSubmitFormTodo = useCallback(({ values, id, cb }: ModalOnSubmitProps) => {
-    setTimeout(() => {
-      values;
-      id;
-      cb();
-    }, 3000);
-  }, []);
+  const onSubmitFormTodo = useCallback(
+    async ({ values, id, cb }: ModalOnSubmitProps) => {
+      // create todo
+      if (!id) {
+        await dispatch(
+          createTodoLogic({
+            title: values.title,
+            description: values.description,
+            userId: localStorage.getItem('uid'),
+            userName: localStorage.getItem('name'),
+            image: values.image,
+          })
+        );
+
+        if (cb) {
+          cb();
+        }
+
+        return 0;
+      }
+
+      // update todo
+    },
+    [dispatch]
+  );
 
   return (
     <div className="bg-gray-200 flex w-screen h-screen">
@@ -107,7 +126,7 @@ const Main = () => {
                 image={item.image}
                 title={item.title}
                 description={item.description}
-                createdAt={new Date(item.created_date.seconds).toString()}
+                createdAt={format(new Date(), 'dd MMMM yyyy, hh:mm aa')}
                 author={item.user_name}
                 isDone={item.done}
                 onMarkDoneClick={onMarkDoneClick}
